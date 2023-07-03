@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Variables
-    const baseDeDatos = [
+    /*const baseDeDatos = [
         {
             id: 1,
             nombre: 'Disco Solido Ssd 500 Gb',
@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
             precio: 1630,
             imagen: '../assets/img/KitSecuencial.png'
         }
-    ];
+    ];*/
 
     let carrito = [];
     const divisa = '$';
@@ -101,53 +101,58 @@ document.addEventListener('DOMContentLoaded', () => {
     const DOMbotonVaciar = document.querySelector('#boton-vaciar');
 
     // funciones
+    const getProducts = async () => {
+        const response = await fetch("data.json");
+        const data = await response.json();
+        
+        data.forEach((info) => {
+    // Estructura
+                const miNodo = document.createElement('div');
+                miNodo.classList.add('card', 'col-sm-4');
+    // Body
+                const miNodoCardBody = document.createElement('div');
+                miNodoCardBody.classList.add('card-body');
+    // Titulo
+                const miNodoTitle = document.createElement('h5');
+                miNodoTitle.classList.add('card-title');
+                miNodoTitle.textContent = info.nombre;
+    // Imagen
+                const miNodoImagen = document.createElement('img');
+                miNodoImagen.classList.add('img-fluid');
+                miNodoImagen.setAttribute('src', info.imagen);
+    // Precio
+                const miNodoPrecio = document.createElement('p');
+                miNodoPrecio.classList.add('card-text');
+                miNodoPrecio.textContent = `${info.precio}${divisa}`;
+                
+    // Boton 
+                const miNodoBoton = document.createElement('button');
+                miNodoBoton.classList.add('btn', 'btn-primary');
+                miNodoBoton.textContent = '+';
+                miNodoBoton.setAttribute('marcador', info.id);
+                miNodoBoton.addEventListener('click', anyadirProductoAlCarrito);
+                
+                
+    // Insertamos
+                miNodoCardBody.appendChild(miNodoImagen);
+                miNodoCardBody.appendChild(miNodoTitle);
+                miNodoCardBody.appendChild(miNodoPrecio);
+                miNodoCardBody.appendChild(miNodoBoton);
+                miNodo.appendChild(miNodoCardBody);
+                DOMitems.appendChild(miNodo);
+            });
+        }
+    
+        /**añadir un producto al carrito de la compra*/
+        function anyadirProductoAlCarrito(evento) {
+            carrito.push(evento.target.getAttribute('marcador'))
+            renderizarCarrito();
+            alert("¡Producto agregado con éxito!")
+        }
+    },
 
     /*productos a partir de la base de datos*/
-    function renderizarProductos() {
-        baseDeDatos.forEach((info) => {
-// Estructura
-            const miNodo = document.createElement('div');
-            miNodo.classList.add('card', 'col-sm-4');
-// Body
-            const miNodoCardBody = document.createElement('div');
-            miNodoCardBody.classList.add('card-body');
-// Titulo
-            const miNodoTitle = document.createElement('h5');
-            miNodoTitle.classList.add('card-title');
-            miNodoTitle.textContent = info.nombre;
-// Imagen
-            const miNodoImagen = document.createElement('img');
-            miNodoImagen.classList.add('img-fluid');
-            miNodoImagen.setAttribute('src', info.imagen);
-// Precio
-            const miNodoPrecio = document.createElement('p');
-            miNodoPrecio.classList.add('card-text');
-            miNodoPrecio.textContent = `${info.precio}${divisa}`;
-            
-// Boton 
-            const miNodoBoton = document.createElement('button');
-            miNodoBoton.classList.add('btn', 'btn-primary');
-            miNodoBoton.textContent = '+';
-            miNodoBoton.setAttribute('marcador', info.id);
-            miNodoBoton.addEventListener('click', anyadirProductoAlCarrito);
-			
-            
-// Insertamos
-            miNodoCardBody.appendChild(miNodoImagen);
-            miNodoCardBody.appendChild(miNodoTitle);
-            miNodoCardBody.appendChild(miNodoPrecio);
-            miNodoCardBody.appendChild(miNodoBoton);
-            miNodo.appendChild(miNodoCardBody);
-            DOMitems.appendChild(miNodo);
-        });
-    }
-
-    /**añadir un producto al carrito de la compra*/
-    function anyadirProductoAlCarrito(evento) {
-        carrito.push(evento.target.getAttribute('marcador'))
-        renderizarCarrito();
-		alert("¡Producto agregado con éxito!")
-    }
+    
 
     /*accesorios en el carrito*/
     function renderizarCarrito() {
@@ -178,7 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
     DOMtotal.textContent = calcularTotal();
-    }
+    },
 
     /*borrar un elemento del carrito*/
     function borrarItemCarrito(evento) {
@@ -187,7 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return carritoId !== id;
         });
         renderizarCarrito();
-    }
+    },
 
     /*precio total*/
     function calcularTotal() {
@@ -197,17 +202,16 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             return total + miItem[0].precio;
         }, 0).toFixed(2);
-    }
+    },
 
     /*vacia el carrito*/
     function vaciarCarrito() {
         carrito = [];
         renderizarCarrito();
 		alert("Su carrito está vacío.")
-    }
+    },
 
-    DOMbotonVaciar.addEventListener('click', vaciarCarrito);
+    DOMbotonVaciar.addEventListener('click', vaciarCarrito),
 
-    renderizarProductos();
-    renderizarCarrito();
-});
+    renderizarProductos(),
+    renderizarCarrito())
